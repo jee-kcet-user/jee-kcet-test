@@ -109,18 +109,18 @@ def compute_analytics():
     worst_subject = min(subject_avg.items(), key=lambda x: x[1])
     recent = history[-5:]
     recent_str = "
-".join(f"{i+1}. {r['subject']} ({r['exam']}) – {r['percentage']:.1f}%" for i, r in enumerate(recent))
+".join(f"{i+1}. {r['subject']} ({r['exam']}) - {r['percentage']:.1f}%" for i, r in enumerate(recent))
     text = (
         f"Total tests: {len(history)}
 
 "
-        f"Best test: {best['subject']} ({best['exam']}) – {best['percentage']:.1f}% ({best['correct']}/{best['total']}) on {best['timestamp'][:10]}
+        f"Best test: {best['subject']} ({best['exam']}) - {best['percentage']:.1f}% ({best['correct']}/{best['total']}) on {best['timestamp'][:10]}
 "
-        f"Worst test: {worst['subject']} ({worst['exam']}) – {worst['percentage']:.1f}% ({worst['correct']}/{worst['total']}) on {worst['timestamp'][:10]}
+        f"Worst test: {worst['subject']} ({worst['exam']}) - {worst['percentage']:.1f}% ({worst['correct']}/{worst['total']}) on {worst['timestamp'][:10]}
 "
-        f"Best subject: {best_subject[0]} – {best_subject[1]:.1f}%
+        f"Best subject: {best_subject[0]} - {best_subject[1]:.1f}%
 "
-        f"Weakest subject: {worst_subject[0]} – {worst_subject[1]:.1f}%
+        f"Weakest subject: {worst_subject[0]} - {worst_subject[1]:.1f}%
 
 "
         f"Recent 5 tests:
@@ -131,18 +131,20 @@ def compute_analytics():
 st.title("JEE + KCET MCQ Test & Analytics Portal")
 
 st.header("1. Paste MCQs (from AI)")
-mcq_text = st.text_area("MCQs in required format", height=150,
+mcq_text = st.text_area(
+    "MCQs in required format",
+    height=150,
     placeholder="Q1. ...
 A) ...
 B) ...
 C) ...
 D) ...
 Answer: A
-Solution: ...")
+Solution: ..."
+)
 
-with st.row():
-    subject = st.selectbox("Subject", ["Physics", "Chemistry", "Maths"])
-    exam = st.selectbox("Exam focus", ["JEE", "KCET", "Both"])
+subject = st.selectbox("Subject", ["Physics", "Chemistry", "Maths"])
+exam = st.selectbox("Exam focus", ["JEE", "KCET", "Both"])
 
 if st.button("Load Quiz"):
     questions = parse_mcqs(mcq_text)
@@ -165,7 +167,6 @@ if questions:
     for i, q in enumerate(questions):
         opts = [o[2:].strip() for o in q["options"]]
         ans = st.radio(f"Q{q['number']}. {q['question']}", opts, key=f"q_{i}")
-        # Map selected option to index
         if ans is None:
             user_answers.append(None)
         else:
